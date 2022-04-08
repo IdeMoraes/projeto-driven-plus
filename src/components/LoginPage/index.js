@@ -4,11 +4,13 @@ import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import logo from "../../assets/Driven_white 1.png";
 import UserContext from "../../contexts/UserContext";
+import SubscriptionContext from "../../contexts/SubscriptionContext";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const {loginResponse, setLoginResponse} = useContext(UserContext);
+  const {subscribeResponse, setSubscribeResponse} = useContext(SubscriptionContext);
   const navigate = useNavigate(); //Eu poderia usar useNavigate direto na função?
 
   const dataToLogin = {
@@ -24,6 +26,7 @@ export default function LoginPage() {
             navigate("/subscriptions");
         }
         else{
+            setSubscribeResponse({...success.data.membership})
             navigate("/home");
         }
     });

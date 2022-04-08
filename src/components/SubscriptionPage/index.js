@@ -47,7 +47,7 @@ export default function SubscriptionPage(){
     function subscribeTo(){
         const request = axios.post("https://mock-api.driven.com.br/api/v4/driven-plus/subscriptions", dataToSubscribe, config);
         request.then((success)=>{
-            console.log(success);
+            console.log(success.data);
             setSubscribeResponse(success.data);
             navigate("/home");
         });
