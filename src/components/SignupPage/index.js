@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 export default function SignupPage() {
@@ -8,6 +8,7 @@ export default function SignupPage() {
   const [name, setName] = useState("");
   const [cpf, setCpf] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const dataToSignup = {
     email: email,
@@ -16,16 +17,24 @@ export default function SignupPage() {
 	password: password
   }
   function createAccount (){
-      const request = axios.post("https://mock-api.driven.com.br/api/v4/driven-plus/auth/sign-up", dataToSignup)
+      const request = axios.post("https://mock-api.driven.com.br/api/v4/driven-plus/auth/sign-up", dataToSignup);
+      request.then((succes)=>{
+          console.log(succes);
+          navigate("/");
+      });
+      request.catch((problem)=>{
+        console.log(problem.response);
+        alert(`Isso não funcionou. ${problem.response.data.message}`)
+      });
   }
 
   return (
     <SignupPageContainer>
       <StyledInput type="text" placeholder="Nome" onChange={event => setName(event.target.value)}/>
       <StyledInput type="text" placeholder="CPF" onChange={event => setCpf(event.target.value)}/>
-      <StyledInput type="email" placeholder="E-mail" onChange={event => setEmail(event.target.value)}/>
+      <StyledInput type="text" placeholder="E-mail" onChange={event => setEmail(event.target.value)}/>
       <StyledInput type="password" placeholder="Senha" onChange={event => setPassword(event.target.value)}/>
-      <StyledButton>CADASTRAR</StyledButton>
+      <StyledButton onClick={()=>{createAccount()}}>CADASTRAR</StyledButton>
       <StyledLink to="/">Já possuí uma conta? Entre</StyledLink>
     </SignupPageContainer>
   );

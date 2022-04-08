@@ -1,17 +1,44 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import axios from "axios";
+import { useState, useContext } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import logo from "../../assets/Driven_white 1.png";
+import UserContext from "../../contexts/UserContext";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
-  const [password, setPasword] = useState("");
+  const [password, setPassword] = useState("");
+  const {loginResponse, setLoginResponse} = useContext(UserContext);
+  const navigate = useNavigate(); //Eu poderia usar useNavigate direto na função?
+
+  const dataToLogin = {
+        email: email,
+        password: password
+  }
+  function LoginAccount (){
+    const request = axios.post("https://mock-api.driven.com.br/api/v4/driven-plus/auth/login", dataToLogin);
+    request.then((success)=>{
+        console.log(success);
+        setLoginResponse(success.data);
+        if(success.data.membership===null){
+            navigate("/subscriptions");
+        }
+        else{
+            navigate("/home");
+        }
+    });
+    request.catch((problem)=>{
+        console.log(problem.response);
+        alert(`Isso não funcionou. ${problem.response.data.message}`)
+    });
+}
+//console.log(token);
   return (
     <LoginPageContainer>
       <img src={logo} alt="logo" />
-      <StyledInput type="email" placeholder="E-mail" />
-      <StyledInput type="password" placeholder="Senha" />
-      <StyledButton>Entrar</StyledButton>
+      <StyledInput type="email" placeholder="E-mail" onChange={event => setEmail(event.target.value)}/>
+      <StyledInput type="password" placeholder="Senha" onChange={event => setPassword(event.target.value)}/>
+      <StyledButton onClick={()=>{LoginAccount()}}>Entrar</StyledButton>
       <StyledLink to="/sign-up">Não possuí uma conta? Cadastre-se</StyledLink>
     </LoginPageContainer>
   );
