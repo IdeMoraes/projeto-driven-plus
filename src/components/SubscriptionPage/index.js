@@ -3,6 +3,7 @@ import { useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import UserContext from "../../contexts/UserContext";
+import SubscriptionContext from "../../contexts/SubscriptionContext";
 import { useState } from "react";
 import styled from "styled-components";
 
@@ -14,6 +15,7 @@ export default function SubscriptionPage(){
     const [expirationDate, setExpirationDate] =useState([]);
     const  parameter   = useParams();
     const {loginResponse, setLoginResponse} = useContext(UserContext);
+    const {subscribeResponse, setSubscribeResponse} = useContext(SubscriptionContext);
     const [modal, setModal]=useState("none");
 
     const navigate = useNavigate();
@@ -46,11 +48,13 @@ export default function SubscriptionPage(){
         const request = axios.post("https://mock-api.driven.com.br/api/v4/driven-plus/subscriptions", dataToSubscribe, config);
         request.then((success)=>{
             console.log(success);
+            setSubscribeResponse(success.data);
             navigate("/home");
         });
         request.catch((problem)=>{
             console.log(problem.response);
             alert(`Isso não funcionou. ${problem.response.data.message}`)
+            setModal("none");
         });
     }
 
